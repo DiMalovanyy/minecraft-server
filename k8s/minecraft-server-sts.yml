@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: minecraft-server
+  labels:
+    app: minecraft-server
+    app.kubernetes.io/version: "0.0.1"
+spec:
+  serviceName: minecraft-server
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft-server
+  template:
+    metadata:
+      labels:
+        app: minecraft-server
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: minecraft-server-core
+        image: registry.hub.docker.com/dmytromalovanyi/minecraft-server-core:v2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 25565
+          name: server
+        resources:
+          limits:
+            cpu: "2"
+            memory: 8Gi
+          requests:
+            cpu: "1"
+            memory: 4Gi
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        volumeMounts:
+        - name: data
+          mountPath: /var/data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+    
