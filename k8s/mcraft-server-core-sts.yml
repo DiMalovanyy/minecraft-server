@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: StatefulSet
+metadata:
+  name: mcraft-server-core
+  labels:
+    app.kubernetes.io/name: mcraft-server-core
+    app: mcraft-server-core
+spec:
+  selector:
+    matchLabels:
+      instance: mcraft-server-core
+  serviceName: "mcraft-server-core"
+  replicas: 1
+  minReadySeconds: 10
+  template:
+    metadata: 
+      labels:
+        instance: mcraft-server-core
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: server image: registry.hub.docker.com/dmytromalovanyi/minecraft-server-core:v2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 25565
+          name: server
+        resources:
+          limits:
+            cpu: "2"
+            memory: 8Gi
+          requests:
+            cpu: "1"
+            memory: 4Gi
+        env:
+        - name: PAPERMC_JAR_PATH 
+          value: https://api.papermc.io/v2/projects/paper/versions/1.19.3/builds/365/downloads/paper-1.19.3-365.jar 
+        - name: INIT_POLICY
+          value: default
+        - name: MYSQL_IP
+          value: empty
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        volumeMounts:
+        - name: data
+          mountPath: /var/data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 5Gi

@@ -19,18 +19,18 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: minecraft-server-core
-        image: registry.hub.docker.com/dmytromalovanyi/minecraft-server-core:v2
+        image: registry.hub.docker.com/dmytromalovanyi/minecraft-server-core:v3
         imagePullPolicy: Always
         ports:
         - containerPort: 25565
           name: server
         resources:
           limits:
-            cpu: "2"
-            memory: 8Gi
+            cpu: 1800m
+            memory: 5700Mi
           requests:
-            cpu: "1"
-            memory: 4Gi
+            cpu: 1200m
+            memory: 5000Mi
         env:
         - name: POD_IP
           valueFrom:
@@ -46,5 +46,5 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 10Gi
+          storage: 5Gi
     
