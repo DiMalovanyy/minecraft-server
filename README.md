@@ -28,3 +28,4 @@ K8s based minecraft server with ssl proxy server for communicate with core (.jar
 ## Screenshots
 
 ###  Redirecotor:
+![Redirecror](https://github.com/DiMalovanyy/minecraft-server/tree/main/img/redirector.png)
